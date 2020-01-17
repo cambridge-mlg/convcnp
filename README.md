@@ -1,4 +1,4 @@
-![Demonstration of a ConvCNP](https://github.com/wesselb/convcnp/blob/master/demo_images/convcnp.gif)
+![Demonstration of a ConvCNP](https://github.com/cambridge-mlg/convcnp/blob/master/demo_images/convcnp.gif)
 
 # Convolutional Conditional Neural Processes
 
@@ -23,7 +23,7 @@ Requirements:
 To begin with, clone and enter the repo.
 
 ```bash
-git clone https://github.com/wesselb/convcnp
+git clone https://github.com/cambridge-mlg/convcnp
 cd convcnp
 ```
 
@@ -55,8 +55,8 @@ Common issues:
 For a tutorial-style exposition of ConvCNPs, see the following two
 expository notebooks:
 
-* [Implementing and Training Convolutional Conditional Neural Processes](https://github.com/wesselb/convcnp/blob/master/convcnp_regression.ipynb), and
-* [Sequential Inference with Convolutional Conditional Neural Processes](https://github.com/wesselb/convcnp/blob/master/sequential_inference.ipynb).
+* [Implementing and Training Convolutional Conditional Neural Processes](https://github.com/cambridge-mlg/convcnp/blob/master/convcnp_regression.ipynb), and
+* [Sequential Inference with Convolutional Conditional Neural Processes](https://github.com/cambridge-mlg/convcnp/blob/master/sequential_inference.ipynb).
 
 ## Reproducing the 1D Experiments
 To reproduce the numbers from the 1d experiments,
