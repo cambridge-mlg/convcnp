@@ -1,0 +1,7 @@
+numpy
+matplotlib
+
+torch
+stheno
+
+python-slugify
