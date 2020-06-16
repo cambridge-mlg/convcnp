@@ -10,7 +10,6 @@ from convcnp.cnp import RegressionANP as ANP
 from convcnp.cnp import RegressionCNP as CNP
 from convcnp.experiment import (
     report_loss,
-    RunningAverage,
     generate_root,
     WorkingDirectory,
     save_checkpoint
@@ -21,35 +20,43 @@ from convcnp.utils import device, gaussian_logpdf
 
 def validate(data, model, report_freq=None):
     """Compute the validation loss."""
-    ravg = RunningAverage()
     model.eval()
+    likelihoods = []
     with torch.no_grad():
         for step, task in enumerate(data):
+            num_target = task['y_target'].shape[1]
             y_mean, y_std = \
                 model(task['x_context'], task['y_context'], task['x_target'])
             obj = \
-                -gaussian_logpdf(task['y_target'], y_mean, y_std,
+                 gaussian_logpdf(task['y_target'], y_mean, y_std,
                                  'batched_mean')
-            ravg.update(obj.item() / data.batch_size, data.batch_size)
+            likelihoods.append(obj.item() / num_target)
             if report_freq:
-                report_loss('Validation', ravg.avg, step, report_freq)
-    return ravg.avg
+                avg_ll = np.array(likelihoods).mean()
+                report_loss('Validation', avg_ll, step, report_freq)
+    avg_ll = np.array(likelihoods).mean()
+    return avg_ll
 
 
 def train(data, model, opt, report_freq):
     """Perform a training epoch."""
-    ravg = RunningAverage()
     model.train()
+    losses = []
     for step, task in enumerate(data):
         y_mean, y_std = model(task['x_context'], task['y_context'],
                               task['x_target'])
         obj = -gaussian_logpdf(task['y_target'], y_mean, y_std, 'batched_mean')
+
+        # Optimization
         obj.backward()
         opt.step()
         opt.zero_grad()
-        ravg.update(obj.item() / data.batch_size, data.batch_size)
-        report_loss('Training', ravg.avg, step, report_freq)
-    return ravg.avg
+
+        # Track training progress
+        losses.append(obj.item())
+        avg_loss = np.array(losses).mean()
+        report_loss('Training', avg_loss, step, report_freq)
+    return avg_loss
 
 
 # Parse arguments given to the script.
@@ -141,7 +148,7 @@ opt = torch.optim.Adam(model.parameters(),
                        weight_decay=args.weight_decay)
 if args.train:
     # Run the training loop, maintaining the best objective value.
-    best_obj = np.inf
+    best_obj = -np.inf
     for epoch in range(args.epochs):
         print('\nEpoch: {}/{}'.format(epoch + 1, args.epochs))
 
@@ -155,7 +162,7 @@ if args.train:
 
         # Update the best objective value and checkpoint the model.
         is_best = False
-        if val_obj < best_obj:
+        if val_obj > best_obj:
             best_obj = val_obj
             is_best = True
         save_checkpoint(wd,
@@ -172,7 +179,7 @@ else:
 
 # Finally, test model on ~2000 tasks.
 test_obj = validate(gen_test, model)
-print('Model averages a log-likelihood of %s on unseen tasks.' % -test_obj)
+print('Model averages a log-likelihood of %s on unseen tasks.' % test_obj)
 with open(wd.file('test_log_likelihood.txt'), 'w') as f:
-    f.write(str(-test_obj))
+    f.write(str(test_obj))
 
