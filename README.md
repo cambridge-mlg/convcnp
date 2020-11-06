@@ -3,7 +3,7 @@
 # Convolutional Conditional Neural Processes
 
 This repository contains code for the 1-dimensional experiments from
-[Convolutional Convolutional Neural Processes](https://openreview.net/forum?id=Skey4eBYPS).
+[Convolutional Convolutional Neural Processes](https://openreview.net/forum?id=Skey4eBYPS). The code for the 2-dimensional experiments can be found [here](https://yanndubs.github.io/Neural-Process-Family/reproducibility/ConvCNP.html).
 
 * [Installation](#installation)
 * [Expository Notebooks](#expository-notebooks)
