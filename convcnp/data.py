@@ -146,7 +146,7 @@ class GPGenerator(DataGenerator):
     """
 
     def __init__(self, kernel=stheno.EQ(), **kw_args):
-        self.gp = stheno.GP(kernel, graph=stheno.Graph())
+        self.gp = stheno.GP(kernel)
         DataGenerator.__init__(self, **kw_args)
 
     def sample(self, x):

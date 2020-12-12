@@ -48,8 +48,8 @@ for context_size in range(1, 16):
                                 x_all[None, :, None].to(device))
 
     # Make predictions with oracle GP
-    post = gp | (to_numpy(x_context), to_numpy(y_context))
-    gp_mean, gp_lower, gp_upper = post(to_numpy(x_all)).marginals()
+    post = gp.measure | (gp(to_numpy(x_context)), to_numpy(y_context))
+    gp_mean, gp_lower, gp_upper = post(gp(to_numpy(x_all))).marginals()
 
     # Plot context set.
     plt.scatter(to_numpy(x_context), to_numpy(y_context),
