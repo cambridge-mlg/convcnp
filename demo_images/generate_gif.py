@@ -49,7 +49,7 @@ for context_size in range(1, 16):
 
     # Make predictions with oracle GP
     post = gp.measure | (gp(to_numpy(x_context)), to_numpy(y_context))
-    gp_mean, gp_lower, gp_upper = post(gp(to_numpy(x_all))).marginals()
+    gp_mean, gp_lower, gp_upper = post(gp(to_numpy(x_all))).marginal_credible_bounds()
 
     # Plot context set.
     plt.scatter(to_numpy(x_context), to_numpy(y_context),
